@@ -310,25 +310,6 @@ const dummydata = {
       }
     },
     {
-      id: 4972,
-      text: null,
-      UserId: 1,
-      RestaurantId: null,
-      createdAt: '2020-07-17T15:50:06.000Z',
-      updatedAt: '2020-07-17T15:50:06.000Z',
-      User: {
-        id: 1,
-        name: 'root',
-        email: 'root@example.com',
-        password: '$2a$10$J9pLpJJ1Tzfe/ZcjdYwXdumyh.3F5E.w/HTxRcH./cl3azhgekgQe',
-        isAdmin: true,
-        image: 'https://i.imgur.com/kTEFFYJ.png',
-        createdAt: '2020-02-28T14:38:32.000Z',
-        updatedAt: '2020-07-13T11:32:31.000Z'
-      },
-      Restaurant: null
-    },
-    {
       id: 4962,
       text: 'qwertyuiop',
       UserId: 3,
