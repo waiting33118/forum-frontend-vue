@@ -5,15 +5,21 @@
       :restaurant="restaurant"
     />
     <hr>
-    <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments :restaurant-comments="restaurantComments" />
-    <!-- 新增評論 CreateComment -->
+    <RestaurantComments
+      :restaurant-comments="restaurantComments"
+      @button-delete-trigger="afterDeleteComment"
+    />
+    <CreateComment
+      :restaurant-id="restaurant.id"
+      @submit-comment-trigger="afterSubmitComment"
+    />
   </div>
 </template>
 
 <script>
 import RestaurantDetail from './../components/RestaurantDetail'
 import RestaurantComments from './../components/RestaurantComments'
+import CreateComment from './../components/CreateComment'
 const dummyData = {
   restaurant: {
     id: 5,
@@ -445,10 +451,21 @@ const dummyData = {
   isFavorited: false,
   isLiked: false
 }
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: '管理者',
+    email: 'root@example.com',
+    image: 'https://i.pravatar.cc/300',
+    isAdmin: true
+  },
+  isAuthenticated: true
+}
 export default {
   components: {
     RestaurantDetail,
-    RestaurantComments
+    RestaurantComments,
+    CreateComment
   },
   data () {
     return {
@@ -464,7 +481,8 @@ export default {
         isFavorited: false,
         isLiked: false
       },
-      restaurantComments: []
+      restaurantComments: [],
+      currentUser: dummyUser.currentUser
     }
   },
   created () {
@@ -499,6 +517,22 @@ export default {
         isLiked
       }
       this.restaurantComments = Comments
+    },
+    afterDeleteComment (commentId) {
+      this.restaurantComments = this.restaurantComments.filter(comment => comment.id !== commentId)
+    },
+    afterSubmitComment (payload) {
+      const { commentId, restaurantId, text } = payload
+      this.restaurantComments.push({
+        id: commentId,
+        RestaurantId: restaurantId,
+        User: {
+          id: this.currentUser.id,
+          name: this.currentUser.name
+        },
+        text,
+        createdAt: new Date()
+      })
     }
   }
 }
