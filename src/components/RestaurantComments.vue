@@ -13,6 +13,7 @@
           v-if="currentUser.isAdmin"
           type="button"
           class="btn btn-danger float-right"
+          @click.stop.prevent="buttonDeleteEvent(comment.id)"
         >
           Delete
         </button>
@@ -54,6 +55,11 @@ export default {
   data () {
     return {
       currentUser: dummyUser.currentUser
+    }
+  },
+  methods: {
+    buttonDeleteEvent (commentId) {
+      this.$emit('button-delete-trigger', commentId)
     }
   }
 }
