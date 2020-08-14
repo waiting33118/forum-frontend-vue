@@ -29,14 +29,9 @@ small {
 </style>
 
 <script>
-import moment from 'moment'
-moment.locale('zh-tw')
+import { fromNowFilter } from './../utils/mixins'
 export default {
-  filters: {
-    fromNow (value) {
-      return moment(value).fromNow()
-    }
-  },
+  mixins: [fromNowFilter],
   props: {
     restaurants: {
       type: Array,

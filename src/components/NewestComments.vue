@@ -17,7 +17,7 @@
         <a href="#">
           {{ comment.User.name }}
         </a>
-        {{ comment.createdAt | formNow }}
+        {{ comment.createdAt | fromNow }}
         <hr>
       </div>
     </div>
@@ -25,14 +25,9 @@
 </template>
 
 <script>
-import moment from 'moment'
-moment.locale('zh-tw')
+import { fromNowFilter } from './../utils/mixins'
 export default {
-  filters: {
-    formNow (value) {
-      return `-${moment(value).fromNow()}`
-    }
-  },
+  mixins: [fromNowFilter],
   props: {
     comments: {
       type: Array,
