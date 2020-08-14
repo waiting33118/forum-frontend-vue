@@ -9,9 +9,9 @@
         :key="restaurant.id"
       >
         <h4>
-          <a href="#">
+          <router-link :to="{ name:'restaurant', params: { id: restaurant.id}}">
             {{ restaurant.name }}
-          </a>
+          </router-link>
           <small>{{ restaurant.Category.name }}</small>
         </h4>
         <p>{{ restaurant.description }}</p>
