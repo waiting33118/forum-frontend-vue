@@ -31,10 +31,12 @@
     </div>
     <div class="col-lg-8">
       <p>{{ restInfo.description }}</p>
-      <a
+      <router-link
         class="btn btn-primary btn-border mr-2"
-        href="#"
-      >Dashboard</a>
+        :to="{ name: 'dashboard', params:{ id: restInfo.id, dashboard:'dashboard' }}"
+      >
+        Dashboard
+      </router-link>
 
       <button
         v-if="restInfo.isFavorited"
