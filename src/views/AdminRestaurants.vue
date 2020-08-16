@@ -1,12 +1,12 @@
 <template>
   <div class="container py-5">
     <AdminNav />
-    <a
-      href="#"
+    <router-link
+      to="/admin/restaurants/new"
       class="btn btn-primary mb-4"
     >
       New Restaurant
-    </a>
+    </router-link>
     <AdminRestaurantsTable />
   </div>
 </template>
