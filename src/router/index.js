@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'root',
+    exact: true,
     redirect: '/restaurants'
   },
   {
@@ -46,6 +46,16 @@ const routes = [
     path: '/users/:id',
     name: 'user',
     component: () => import('./../views/User.vue')
+  },
+  {
+    path: '/admin',
+    exact: true,
+    redirect: '/admin/restaurants'
+  },
+  {
+    path: '/admin/restaurants',
+    name: 'admin-restaurants',
+    component: () => import('./../views/AdminRestaurants.vue')
   },
   {
     path: '/signin',
