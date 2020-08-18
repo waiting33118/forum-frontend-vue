@@ -21,7 +21,7 @@
             <li><strong>{{ userProfile.followerCounts }}</strong> followers (追隨者)</li>
           </ul>
           <p>
-            <router-link to="#">
+            <router-link :to="{ name:'user-edit', params: { id: userProfile.id } }">
               <button
                 type="submit"
                 class="btn btn-primary"
