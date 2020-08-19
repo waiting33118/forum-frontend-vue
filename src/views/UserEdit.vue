@@ -5,7 +5,7 @@
         <label for="name">Name</label>
         <input
           id="name"
-          v-model="name"
+          v-model="userProfile.name"
           type="text"
           name="name"
           class="form-control"
@@ -22,6 +22,12 @@
           name="image"
           accept="image/*"
           class="form-control-file"
+          @change="handleFileChange"
+        >
+        <img
+          v-if="userProfile.image"
+          :src="userProfile.image"
+          alt="avatar"
         >
       </div>
 
@@ -34,6 +40,15 @@
     </form>
   </div>
 </template>
+
+<style scoped>
+  img {
+    margin-top: 10px;
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+  }
+</style>
 
 <script>
 const dummyData = {
@@ -132,8 +147,20 @@ export default {
         image
       }
     },
-    handleSubmit () {
-      console.log('submit')
+    handleFileChange (e) {
+      const { files } = e.target
+      if (!files.length) {
+        this.userProfile.image = ''
+      } else {
+        const imageURL = window.URL.createObjectURL(files[0])
+        this.userProfile.image = imageURL
+      }
+    },
+    handleSubmit (e) {
+      const formData = new FormData(e.target)
+      for (const [name, value] of formData.entries()) {
+        console.log(name, value)
+      }
     }
   }
 }
