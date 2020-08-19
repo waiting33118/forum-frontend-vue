@@ -53,16 +53,45 @@
             {{ category.id }}
           </th>
           <td class="position-relative">
-            <div class="category-name">
+            <div
+              v-show="!category.isEditing"
+              class="category-name"
+            >
               {{ category.name }}
             </div>
+            <input
+              v-show="category.isEditing"
+              v-model="category.name"
+              v-focus
+              type="text"
+              class="form-control"
+              @keyup.enter.stop.prevent="updateCategory(category.id,category.name)"
+              @keyup.esc.stop.prevent="cancelEditCategory(category.id)"
+            >
+            <span
+              v-show="category.isEditing"
+              class="cancel"
+              @click.stop.prevent="cancelEditCategory(category.id)"
+            >
+              ✕
+            </span>
           </td>
           <td class="d-flex justify-content-between">
             <button
+              v-show="!category.isEditing"
               type="button"
               class="btn btn-link mr-2"
+              @click.stop.prevent="toggleIsEditing(category.id)"
             >
               Edit
+            </button>
+            <button
+              v-show="category.isEditing"
+              type="button"
+              class="btn btn-link mr-2"
+              @click.stop.prevent="updateCategory(category.id,category.name)"
+            >
+              Save
             </button>
             <button
               type="button"
@@ -77,6 +106,36 @@
     </table>
   </div>
 </template>
+
+<style scoped>
+.category-name {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  outline: 0;
+  cursor: auto;
+}
+
+.btn-link {
+  width: 62px;
+}
+
+.cancel {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #aaaaaa;
+  border-radius: 50%;
+  user-select: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+</style>
 
 <script>
 import AdminNav from '@/components/AdminNav'
@@ -115,6 +174,11 @@ export default {
   components: {
     AdminNav
   },
+  directives: {
+    focus: function (el) {
+      el.focus()
+    }
+  },
   data () {
     return {
       categories: [],
@@ -126,7 +190,10 @@ export default {
   },
   methods: {
     fetchCategories () {
-      this.categories = dummyData.categories
+      this.categories = dummyData.categories.map(category => ({
+        ...category,
+        isEditing: false
+      }))
     },
     addCategory () {
       this.categories.push({
@@ -137,6 +204,34 @@ export default {
     },
     deleteCategory (categoryId) {
       this.categories = this.categories.filter(category => category.id !== categoryId)
+    },
+    toggleIsEditing (categoryId) {
+      this.categories = this.categories.map(category => {
+        if (category.id === categoryId) {
+          return {
+            ...category,
+            isEditing: !category.isEditing,
+            nameCached: category.name
+          }
+        }
+        return category
+      })
+    },
+    updateCategory (categoryId, name) {
+      // TODO: 發API回伺服器
+      this.toggleIsEditing(categoryId)
+    },
+    cancelEditCategory (categoryId) {
+      this.categories = this.categories.map(category => {
+        if (category.id === categoryId) {
+          return {
+            ...category,
+            name: category.nameCached
+          }
+        }
+        return category
+      })
+      this.toggleIsEditing(categoryId)
     }
   }
 }
