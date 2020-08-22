@@ -8,5 +8,10 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` },
       params: { page, categoryId }
     })
+  },
+  getFeeds () {
+    return apiHelper.get('/restaurants/feeds', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
