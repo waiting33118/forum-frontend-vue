@@ -9,12 +9,12 @@
         :key="comment.id"
       >
         <h4>
-          <router-link :to="{ name:'restaurant', params: {id: comment.Restaurant.id}}">
+          <router-link :to="{ name:'restaurant', params: { id: comment.RestaurantId}}">
             {{ comment.Restaurant? comment.Restaurant.name: '未命名餐廳' }}
           </router-link>
         </h4>
         <p>{{ comment.text }}</p>by
-        <router-link :to="{ name:'user', params: { id: comment.User.id }}">
+        <router-link :to="{ name:'user', params: { id: comment.UserId }}">
           {{ comment.User.name }}
         </router-link>
         {{ comment.createdAt | fromNow }}
@@ -26,6 +26,7 @@
 
 <script>
 import { fromNowFilter } from './../utils/mixins'
+
 export default {
   mixins: [fromNowFilter],
   props: {
