@@ -32,7 +32,7 @@
             v-if="restDetail.isFavorited"
             type="button"
             class="btn btn-danger mr-2"
-            @click.stop.prevent="deleteFavorite"
+            @click.stop.prevent="deleteFavorite(restDetail.id)"
           >
             移除最愛
           </button>
@@ -40,7 +40,7 @@
             v-else
             type="button"
             class="btn btn-primary"
-            @click.stop.prevent="addFavorite"
+            @click.stop.prevent="addFavorite(restDetail.id)"
           >
             加到最愛
           </button>
@@ -51,7 +51,11 @@
 </template>
 
 <script>
+import restaurantAPI from './../apis/restaurants'
+import { Toast } from './../utils/helpers'
+
 export default {
+  name: 'PopularRestaurantCard',
   props: {
     restaurant: {
       type: Object,
@@ -64,16 +68,36 @@ export default {
     }
   },
   methods: {
-    addFavorite () {
-      this.restDetail = {
-        ...this.restDetail,
-        isFavorited: true
+    async addFavorite (restaurantId) {
+      try {
+        const { data } = await restaurantAPI.addFavorite(restaurantId)
+        if (data.status !== 'success') throw new Error(status.message)
+        this.restDetail = {
+          ...this.restDetail,
+          FavoriteCount: ++this.restDetail.FavoriteCount,
+          isFavorited: true
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法加入最愛，請稍後再試'
+        })
       }
     },
-    deleteFavorite () {
-      this.restDetail = {
-        ...this.restDetail,
-        isFavorited: false
+    async deleteFavorite (restaurantId) {
+      try {
+        const { data } = await restaurantAPI.deleteFavorite(restaurantId)
+        if (data.status !== 'success') throw new Error(status.message)
+        this.restDetail = {
+          ...this.restDetail,
+          FavoriteCount: --this.restDetail.FavoriteCount,
+          isFavorited: false
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法移除最愛，請稍後再試'
+        })
       }
     }
   }
