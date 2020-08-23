@@ -27,7 +27,6 @@ export default {
       try {
         this.isProcessing = true
         const { data } = await adminAPI.restaurants.create({ formData })
-        console.log(data)
         if (data.status !== 'success') throw new Error(status.message)
         this.$router.push({ name: 'admin-restaurants' })
       } catch (error) {
