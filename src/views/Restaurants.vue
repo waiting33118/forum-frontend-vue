@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       categories: [],
-      categoryId: '',
+      categoryId: 0,
       currentPage: -1,
       restaurants: [],
       totalPage: -1,
@@ -62,7 +62,7 @@ export default {
         const { restaurants, categories, categoryId, page, totalPage, prev, next } = response.data
         this.restaurants = restaurants
         this.categories = categories
-        this.categoryId = categoryId
+        this.categoryId = categoryId === '' ? 0 : categoryId
         this.currentPage = page
         this.totalPage = totalPage.length
         this.perviousPage = prev
