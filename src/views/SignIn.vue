@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import authrizationAPI from './../apis/authorization'
+import authorizationAPI from './../apis/authorization'
 import { Toast } from './../utils/helpers'
 export default {
   name: 'SignIn',
@@ -84,7 +84,7 @@ export default {
           })
         }
         this.isProcessing = true
-        const { data } = await authrizationAPI.signIn({
+        const { data } = await authorizationAPI.signIn({
           email: this.email,
           password: this.password
         })
