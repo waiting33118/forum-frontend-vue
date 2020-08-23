@@ -62,7 +62,7 @@ export default {
         const { restaurants, categories, categoryId, page, totalPage, prev, next } = response.data
         this.restaurants = restaurants
         this.categories = categories
-        this.categoryId = categoryId === '' ? 0 : categoryId
+        this.categoryId = categoryId
         this.currentPage = page
         this.totalPage = totalPage.length
         this.perviousPage = prev
