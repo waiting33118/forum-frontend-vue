@@ -70,6 +70,7 @@
       <button
         class="btn btn-lg btn-primary btn-block mb-3"
         type="submit"
+        :disabled="isProcessing"
       >
         Submit
       </button>
@@ -90,24 +91,47 @@
 </template>
 
 <script>
+import authAPI from './../apis/authorization'
+import { Toast } from './../utils/helpers'
+
 export default {
+  name: 'SignUp',
   data () {
     return {
       name: '',
       email: '',
       password: '',
-      passwordCheck: ''
+      passwordCheck: '',
+      isProcessing: false
     }
   },
   methods: {
-    handleSubmit () {
-      const data = JSON.stringify({
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck
-      })
-      console.log(data)
+    async handleSubmit () {
+      this.isProcessing = true
+      if (!this.name || !this.email || !this.password || !this.passwordCheck) {
+        this.isProcessing = false
+        return Toast.fire({
+          icon: 'warning',
+          title: '所有欄位均為必填'
+        })
+      }
+      try {
+        const registrationData = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck
+        }
+        const { data } = await authAPI.signUp(registrationData)
+        if (data.status !== 'success') throw new Error(data.message)
+        this.$router.push({ name: 'restaurants' })
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: 'error',
+          title: '註冊失敗，請重新嘗試'
+        })
+      }
     }
   }
 }
