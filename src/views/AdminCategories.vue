@@ -17,6 +17,7 @@
           <button
             type="button"
             class="btn btn-primary"
+            :disabled="isProcessing"
             @click.stop.prevent="addCategory"
           >
             新增
@@ -139,38 +140,11 @@
 
 <script>
 import AdminNav from '@/components/AdminNav'
-import uuid from 'uuid/dist/v4'
-
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: '中式料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 2,
-      name: '日本料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 3,
-      name: '義大利料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    },
-    {
-      id: 4,
-      name: '墨西哥料理',
-      createdAt: '2019-06-22T09:00:43.000Z',
-      updatedAt: '2019-06-22T09:00:43.000Z'
-    }
-  ]
-}
+import adminAPI from './../apis/admin'
+import { Toast } from './../utils/helpers'
 
 export default {
+  name: 'AdminCategories',
   components: {
     AdminNav
   },
@@ -182,28 +156,58 @@ export default {
   data () {
     return {
       categories: [],
-      newCategoryName: ''
+      newCategoryName: '',
+      isProcessing: false
     }
   },
   created () {
     this.fetchCategories()
   },
   methods: {
-    fetchCategories () {
-      this.categories = dummyData.categories.map(category => ({
-        ...category,
-        isEditing: false
-      }))
+    async fetchCategories () {
+      try {
+        const { data } = await adminAPI.categories.get()
+        this.categories = data.categories.map(category => ({
+          ...category,
+          isEditing: false
+        }))
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得餐廳類別，請稍後再試'
+        })
+      }
     },
-    addCategory () {
-      this.categories.push({
-        id: uuid(),
-        name: this.newCategoryName
-      })
-      this.newCategoryName = ''
+    async addCategory () {
+      this.isProcessing = true
+      try {
+        const { data } = await adminAPI.categories.create({ name: this.newCategoryName })
+        if (data.status !== 'success') throw new Error(data.message)
+        this.categories.push({
+          id: data.categoryId,
+          name: this.newCategoryName
+        })
+        this.newCategoryName = ''
+        this.isProcessing = false
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增餐廳類別，請稍後再試'
+        })
+      }
     },
-    deleteCategory (categoryId) {
-      this.categories = this.categories.filter(category => category.id !== categoryId)
+    async deleteCategory (categoryId) {
+      try {
+        const { data } = await adminAPI.categories.delete(categoryId)
+        if (data.status !== 'success') throw new Error(data.message)
+        this.categories = this.categories.filter(category => category.id !== categoryId)
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法刪除餐廳類別，請稍後再試'
+        })
+      }
     },
     toggleIsEditing (categoryId) {
       this.categories = this.categories.map(category => {
@@ -217,9 +221,17 @@ export default {
         return category
       })
     },
-    updateCategory (categoryId, name) {
-      // TODO: 發API回伺服器
-      this.toggleIsEditing(categoryId)
+    async updateCategory (categoryId, name) {
+      try {
+        const { data } = await adminAPI.categories.update({ categoryId, name })
+        if (data.status !== 'success') throw new Error(data.message)
+        this.toggleIsEditing(categoryId)
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法更新餐廳類別，請稍後再試'
+        })
+      }
     },
     cancelEditCategory (categoryId) {
       this.categories = this.categories.map(category => {
