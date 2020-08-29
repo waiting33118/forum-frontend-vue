@@ -21,6 +21,7 @@
       <button
         type="submit"
         class="btn btn-primary mr-0"
+        :disabled="isProcessing"
       >
         Submit
       </button>
@@ -29,7 +30,9 @@
 </template>
 
 <script>
-import uuid from 'uuid/dist/v4'
+import commentAPI from './../apis/comments'
+import { Toast } from './../utils/helpers'
+
 export default {
   props: {
     restaurantId: {
@@ -39,17 +42,33 @@ export default {
   },
   data () {
     return {
-      textComment: ''
+      textComment: '',
+      isProcessing: false
     }
   },
   methods: {
-    submitComment () {
-      this.$emit('submit-comment-trigger', {
-        id: uuid(),
-        restaurantId: this.restaurantId,
-        text: this.textComment
-      })
-      this.textComment = ''
+    async submitComment () {
+      try {
+        this.isProcessing = true
+        const { data } = await commentAPI.addComment({
+          restaurantId: this.restaurantId,
+          text: this.textComment
+        })
+        if (data.status !== 'success') throw new Error(data.message)
+        this.$emit('submit-comment-trigger', {
+          commentId: data.commentId,
+          restaurantId: this.restaurantId,
+          text: this.textComment
+        })
+        this.isProcessing = false
+        this.textComment = ''
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: 'error',
+          title: '留言失敗，請再次嘗試'
+        })
+      }
     }
   }
 }

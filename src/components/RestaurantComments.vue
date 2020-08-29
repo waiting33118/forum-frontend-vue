@@ -13,6 +13,7 @@
           v-if="currentUser.isAdmin"
           type="button"
           class="btn btn-danger float-right"
+          :disabled="isProcessing"
           @click.stop.prevent="buttonDeleteEvent(comment.id)"
         >
           Delete
@@ -34,16 +35,10 @@
 
 <script>
 import { fromNowFilter } from './../utils/mixins'
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import { mapState } from 'vuex'
+import commentAPI from './../apis/comments'
+import { Toast } from './../utils/helpers'
+
 export default {
   mixins: [fromNowFilter],
   props: {
@@ -54,12 +49,27 @@ export default {
   },
   data () {
     return {
-      currentUser: dummyUser.currentUser
+      isProcessing: false
     }
   },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   methods: {
-    buttonDeleteEvent (commentId) {
-      this.$emit('button-delete-trigger', commentId)
+    async buttonDeleteEvent (commentId) {
+      try {
+        this.isProcessing = true
+        const { data } = await commentAPI.deleteComment(commentId)
+        if (data.status !== 'success') throw new Error(data.message)
+        this.$emit('button-delete-trigger', commentId)
+        this.isProcessing = false
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法刪除留言，請稍後再試'
+        })
+      }
     }
   }
 }
