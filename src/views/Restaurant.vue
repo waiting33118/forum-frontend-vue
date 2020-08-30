@@ -1,5 +1,9 @@
 <template>
-  <div class="container py-5">
+  <Spinner v-if="isLoading" />
+  <div
+    v-else
+    class="container py-5"
+  >
     <RestaurantDetail
       :key="restaurant.id"
       :restaurant="restaurant"
@@ -20,6 +24,7 @@
 import RestaurantDetail from './../components/RestaurantDetail'
 import RestaurantComments from './../components/RestaurantComments'
 import CreateComment from './../components/CreateComment'
+import Spinner from './../components/Spinner'
 import restaurantAPI from './../apis/restaurants'
 import { Toast } from './../utils/helpers'
 import { mapState } from 'vuex'
@@ -29,7 +34,8 @@ export default {
   components: {
     RestaurantDetail,
     RestaurantComments,
-    CreateComment
+    CreateComment,
+    Spinner
   },
   data () {
     return {
@@ -45,7 +51,8 @@ export default {
         isFavorited: false,
         isLiked: false
       },
-      restaurantComments: []
+      restaurantComments: [],
+      isLoading: true
     }
   },
   computed: {
@@ -90,7 +97,9 @@ export default {
           isLiked
         }
         this.restaurantComments = Comments
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Toast.fire({
           icon: 'error',
           title: '無法取得餐廳資料，請稍後再試'
