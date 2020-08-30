@@ -29,6 +29,12 @@
   </form>
 </template>
 
+<style scoped>
+.form-group {
+  margin: 21px 0 8px 0;
+}
+</style>
+
 <script>
 import commentAPI from './../apis/comments'
 import { Toast } from './../utils/helpers'

@@ -10,6 +10,12 @@
   </div>
 </template>
 
+<style scoped>
+  main {
+    margin-top: 65px !important;
+  }
+</style>
+
 <script>
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
